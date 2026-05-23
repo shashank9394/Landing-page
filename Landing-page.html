@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AURA — Wear the Future</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0d0c0a;
+      --cream: #f4f0e8;
+      --warm: #e8dfc8;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --rust: #b85c38;
+      --muted: #7a7268;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Syne', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ink);
+      color: var(--cream);
+      font-family: var(--sans);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* CURSOR */
+    .cursor {
+      position: fixed;
+      width: 12px; height: 12px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, background 0.3s;
+      mix-blend-mode: screen;
+    }
+    .cursor.hover { width: 40px; height: 40px; background: var(--gold-light); }
+    .cursor-ring {
+      position: fixed;
+      width: 40px; height: 40px;
+      border: 1px solid rgba(201,168,76,0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.25s ease;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.6rem 3rem;
+      mix-blend-mode: difference;
+    }
+    .nav-logo {
+      font-family: var(--sans);
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: 0.3em;
+      color: var(--cream);
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+    .nav-links a:hover { opacity: 1; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 8rem 3rem 5rem 5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(4rem, 7vw, 7rem);
+      font-weight: 300;
+      line-height: 0.92;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.5s forwards;
+    }
+    .hero-title em { font-style: italic; color: var(--gold); }
+
+    .hero-desc {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: rgba(244,240,232,0.6);
+      max-width: 340px;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.7s forwards;
+    }
+
+    .hero-cta {
+      display: flex; gap: 1.2rem; align-items: center;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.9s forwards;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--ink);
+      border: none;
+      padding: 1rem 2.2rem;
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: none;
+      transition: background 0.3s, transform 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .btn-ghost {
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.5;
+      transition: opacity 0.3s;
+      border-bottom: 1px solid rgba(244,240,232,0.3);
+      padding-bottom: 2px;
+    }
+    .btn-ghost:hover { opacity: 1; }
+
+    .hero-right {
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-image-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 60% 40%, rgba(201,168,76,0.12) 0%, transparent 70%),
+        linear-gradient(135deg, #1a1610 0%, #0d0c0a 100%);
+    }
+    .hero-product {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .product-visual {
+      width: 320px; height: 420px;
+      position: relative;
+      opacity: 0;
+      animation: floatIn 1.2s ease 0.6s forwards;
+    }
+    .product-card-3d {
+      width: 100%; height: 100%;
+      background: linear-gradient(145deg, #1e1b14 0%, #2a2416 50%, #1a1610 100%);
+      border: 1px solid rgba(201,168,76,0.25);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(201,168,76,0.2);
+      transition: transform 0.1s ease;
+    }
+    .product-card-3d::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: conic-gradient(from 0deg, transparent 0%, rgba(201,168,76,0.05) 20%, transparent 40%);
+      animation: spin 8s linear infinite;
+    }
+    .product-icon {
+      font-size: 5rem;
+      filter: drop-shadow(0 0 20px rgba(201,168,76,0.5));
+      position: relative; z-index: 1;
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+    .product-name-card {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      position: relative; z-index: 1;
+    }
+    .product-model {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(244,240,232,0.4);
+      position: relative; z-index: 1;
+    }
+    .product-price-tag {
+      position: absolute;
+      bottom: 1.5rem; right: 1.5rem;
+      background: var(--gold);
+      color: var(--ink);
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 0.4rem 0.8rem;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 3rem; left: 5rem;
+      display: flex; align-items: center; gap: 1rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.2s forwards;
+    }
+    .scroll-line {
+      width: 40px; height: 1px;
+      background: var(--gold);
+      position: relative;
+      overflow: hidden;
+    }
+    .scroll-line::after {
+      content: '';
+      position: absolute;
+      left: -100%; top: 0;
+      width: 100%; height: 100%;
+      background: var(--cream);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    .scroll-text {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* MARQUEE */
+    .marquee-section {
+      border-top: 1px solid rgba(201,168,76,0.15);
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+      padding: 1.2rem 0;
+      overflow: hidden;
+      background: rgba(201,168,76,0.03);
+    }
+    .marquee-track {
+      display: flex; gap: 4rem;
+      animation: marquee 20s linear infinite;
+      width: max-content;
+    }
+    .marquee-item {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .marquee-item::before {
+      content: '✦';
+      color: var(--gold);
+      font-size: 0.5rem;
+    }
+
+    /* FEATURES */
+    .features {
+      padding: 8rem 5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .features-text { }
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-label::before {
+      content: '';
+      width: 30px; height: 1px;
+      background: var(--gold);
+    }
+    .features-title {
+      font-family: var(--serif);
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 2rem;
+    }
+    .features-title em { font-style: italic; color: var(--gold); }
+    .features-body {
+      font-family: var(--serif);
+      font-size: 1rem;
+      line-height: 1.9;
+      color: rgba(244,240,232,0.6);
+      margin-bottom: 3rem;
+    }
+    .feature-list {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .feature-list li {
+      display: flex; align-items: center; gap: 1rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(244,240,232,0.7);
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(244,240,232,0.07);
+    }
+    .feature-list li::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .feature-card {
+      background: rgba(201,168,76,0.04);
+      border: 1px solid rgba(201,168,76,0.1);
+      padding: 2rem;
+      transition: border-color 0.3s, background 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .feature-card:hover {
+      border-color: rgba(201,168,76,0.3);
+      background: rgba(201,168,76,0.07);
+      transform: translateY(-4px);
+    }
+    .feature-card:hover::before { transform: scaleX(1); }
+    .feature-card-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 8px rgba(201,168,76,0.3));
+    }
+    .feature-card-title {
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      color: var(--cream);
+    }
+    .feature-card-desc {
+      font-family: var(--serif);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: rgba(244,240,232,0.5);
+    }
+    .feature-card.large {
+      grid-column: span 2;
+      display: flex; align-items: center; gap: 2rem;
+    }
+    .feature-card.large .feature-card-icon { font-size: 2.5rem; flex-shrink: 0; }
+
+    /* STATS */
+    .stats {
+      padding: 5rem;
+      border-top: 1px solid rgba(244,240,232,0.07);
+      border-bottom: 1px solid rgba(244,240,232,0.07);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      text-align: center;
+      background: rgba(255,255,255,0.01);
+    }
+    .stat-number {
+      font-family: var(--serif);
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .stat-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* TESTIMONIALS */
+    .testimonials {
+      padding: 8rem 5rem;
+    }
+    .testimonials-header {
+      text-align: center;
+      margin-bottom: 5rem;
+    }
+    .testimonials-title {
+      font-family: var(--serif);
+      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      font-weight: 300;
+    }
+    .testimonials-title em { font-style: italic; color: var(--gold); }
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .review-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(244,240,232,0.07);
+      padding: 2.5rem;
+      position: relative;
+      transition: border-color 0.3s;
+    }
+    .review-card:hover { border-color: rgba(201,168,76,0.2); }
+    .review-card::before {
+      content: '\201C';
+      font-family: var(--serif);
+      font-size: 5rem;
+      color: var(--gold);
+      opacity: 0.2;
+      position: absolute;
+      top: 1rem; left: 1.5rem;
+      line-height: 1;
+    }
+    .review-stars {
+      color: var(--gold);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 1.2rem;
+    }
+    .review-text {
+      font-family: var(--serif);
+      font-size: 1rem;
+      line-height: 1.8;
+      color: rgba(244,240,232,0.7);
+      margin-bottom: 1.5rem;
+    }
+    .review-author {
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .review-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--rust));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 0.75rem;
+      color: var(--ink);
+      flex-shrink: 0;
+    }
+    .review-name {
+      font-weight: 600;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+    .review-handle {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    /* PRICING */
+    .pricing {
+      padding: 8rem 5rem;
+      background: rgba(201,168,76,0.02);
+      border-top: 1px solid rgba(201,168,76,0.08);
+    }
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .pricing-title {
+      font-family: var(--serif);
+      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      font-weight: 300;
+      margin-top: 1rem;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .price-card {
+      border: 1px solid rgba(244,240,232,0.1);
+      padding: 3rem 2.5rem;
+      text-align: center;
+      position: relative;
+      transition: transform 0.3s, border-color 0.3s;
+      background: rgba(13,12,10,0.8);
+    }
+    .price-card:hover { transform: translateY(-8px); }
+    .price-card.featured {
+      border-color: var(--gold);
+      background: linear-gradient(145deg, rgba(201,168,76,0.08), rgba(13,12,10,0.9));
+    }
+    .price-badge {
+      position: absolute;
+      top: -12px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold);
+      color: var(--ink);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.3rem 1rem;
+    }
+    .price-tier {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+    }
+    .price-amount {
+      font-family: var(--serif);
+      font-size: 3.5rem;
+      font-weight: 300;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .price-period {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      margin-bottom: 2rem;
+    }
+    .price-features {
+      list-style: none;
+      margin-bottom: 2.5rem;
+      text-align: left;
+    }
+    .price-features li {
+      padding: 0.6rem 0;
+      font-family: var(--serif);
+      font-size: 0.9rem;
+      color: rgba(244,240,232,0.7);
+      border-bottom: 1px solid rgba(244,240,232,0.05);
+      display: flex; align-items: center; gap: 0.7rem;
+    }
+    .price-features li::before { content: '—'; color: var(--gold); font-weight: 700; }
+    .btn-price {
+      width: 100%;
+      padding: 0.9rem;
+      background: transparent;
+      border: 1px solid rgba(244,240,232,0.2);
+      color: var(--cream);
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: none;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .btn-price:hover { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+    .price-card.featured .btn-price {
+      background: var(--gold);
+      color: var(--ink);
+      border-color: var(--gold);
+    }
+    .price-card.featured .btn-price:hover { background: var(--gold-light); }
+
+    /* CTA SECTION */
+    .cta-section {
+      padding: 10rem 5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-label { margin-bottom: 2rem; justify-content: center; }
+    .cta-title {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 6vw, 6rem);
+      font-weight: 300;
+      line-height: 1.05;
+      margin-bottom: 2rem;
+    }
+    .cta-title em { font-style: italic; color: var(--gold); }
+    .cta-subtitle {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      color: rgba(244,240,232,0.5);
+      max-width: 500px;
+      margin: 0 auto 3.5rem;
+      line-height: 1.8;
+    }
+    .cta-buttons {
+      display: flex; gap: 1.5rem; justify-content: center; align-items: center;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(244,240,232,0.07);
+      padding: 4rem 5rem 3rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+    }
+    .footer-brand .nav-logo {
+      display: block;
+      margin-bottom: 1rem;
+      mix-blend-mode: normal;
+    }
+    .footer-tagline {
+      font-family: var(--serif);
+      font-size: 0.9rem;
+      color: rgba(244,240,232,0.4);
+      line-height: 1.7;
+      max-width: 260px;
+    }
+    .footer-col-title {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+    }
+    .footer-links {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 0.7rem;
+    }
+    .footer-links a {
+      color: rgba(244,240,232,0.4);
+      text-decoration: none;
+      font-family: var(--serif);
+      font-size: 0.9rem;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--cream); }
+    .footer-bottom {
+      grid-column: span 4;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(244,240,232,0.06);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-bottom-text {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: rgba(244,240,232,0.25);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(40px) rotateX(10deg); }
+      to { opacity: 1; transform: translateY(0) rotateX(0); }
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes pulse-glow {
+      0%, 100% { filter: drop-shadow(0 0 20px rgba(201,168,76,0.5)); }
+      50% { filter: drop-shadow(0 0 35px rgba(201,168,76,0.8)); }
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    @keyframes scrollLine {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">AURA</a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">Collection 2026 — Now Available</p>
+      <h1 class="hero-title">Wear the<br><em>Future</em><br>Now.</h1>
+      <p class="hero-desc">
+        Precision-engineered for the discerning individual. AURA blends
+        cutting-edge materials with timeless design philosophy.
+      </p>
+      <div class="hero-cta">
+        <a href="#pricing" class="btn-primary">Shop Now</a>
+        <a href="#features" class="btn-ghost">Explore Features</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-image-bg"></div>
+      <div class="hero-product">
+        <div class="product-visual" id="productVisual">
+          <div class="product-card-3d" id="productCard">
+            <div class="product-icon">⌚</div>
+            <div class="product-name-card">AURA Pro</div>
+            <div class="product-model">Model X-7 · Onyx Edition</div>
+            <div class="product-price-tag">$299</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span class="scroll-text">Scroll to explore</span>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-section" aria-hidden="true">
+    <div class="marquee-track">
+      <span class="marquee-item">Precision Engineering</span>
+      <span class="marquee-item">Sapphire Crystal</span>
+      <span class="marquee-item">100m Water Resistant</span>
+      <span class="marquee-item">Titanium Case</span>
+      <span class="marquee-item">Swiss Movement</span>
+      <span class="marquee-item">7-Year Warranty</span>
+      <span class="marquee-item">Hand-Finished</span>
+      <span class="marquee-item">Limited Edition</span>
+      <span class="marquee-item">Precision Engineering</span>
+      <span class="marquee-item">Sapphire Crystal</span>
+      <span class="marquee-item">100m Water Resistant</span>
+      <span class="marquee-item">Titanium Case</span>
+      <span class="marquee-item">Swiss Movement</span>
+      <span class="marquee-item">7-Year Warranty</span>
+      <span class="marquee-item">Hand-Finished</span>
+      <span class="marquee-item">Limited Edition</span>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="features-text">
+      <div class="section-label reveal">Craftsmanship</div>
+      <h2 class="features-title reveal reveal-delay-1">
+        Built for those<br>who demand the <em>exceptional.</em>
+      </h2>
+      <p class="features-body reveal reveal-delay-2">
+        Every AURA timepiece is the result of hundreds of hours of meticulous
+        craftsmanship, uncompromising material selection, and an obsessive
+        pursuit of perfection in every detail.
+      </p>
+      <ul class="feature-list">
+        <li class="reveal reveal-delay-1">Titanium Grade 5 Casing</li>
+        <li class="reveal reveal-delay-2">Anti-Reflective Sapphire Crystal</li>
+        <li class="reveal reveal-delay-3">In-House Automatic Movement</li>
+        <li class="reveal reveal-delay-4">Leather & NATO Strap Included</li>
+      </ul>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-card-icon">🔋</div>
+        <div class="feature-card-title">Power Reserve</div>
+        <div class="feature-card-desc">72-hour reserve with power indicator complication.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-card-icon">🛡️</div>
+        <div class="feature-card-title">Scratch Proof</div>
+        <div class="feature-card-desc">DLC-coated case withstands everyday abuse.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-card-icon">🌊</div>
+        <div class="feature-card-title">Water Sealed</div>
+        <div class="feature-card-desc">Rated to 100m. From shower to open ocean.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-4">
+        <div class="feature-card-icon">📡</div>
+        <div class="feature-card-title">GPS Sync</div>
+        <div class="feature-card-desc">Atomic accuracy via satellite time signal.</div>
+      </div>
+      <div class="feature-card large reveal">
+        <div class="feature-card-icon">♾️</div>
+        <div>
+          <div class="feature-card-title">Lifetime Craftsmanship Guarantee</div>
+          <div class="feature-card-desc">Every AURA comes with our promise: free servicing for life on movement and case components. We stand behind every piece we make, unconditionally.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="reveal">
+      <div class="stat-number" data-target="48000">0</div>
+      <div class="stat-label">Happy Owners</div>
+    </div>
+    <div class="reveal reveal-delay-1">
+      <div class="stat-number" data-target="12">0</div>
+      <div class="stat-label">Countries Shipped</div>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <div class="stat-number" data-target="98">0</div>
+      <div class="stat-label">% 5-Star Reviews</div>
+    </div>
+    <div class="reveal reveal-delay-3">
+      <div class="stat-number">7yr</div>
+      <div class="stat-label">Warranty Coverage</div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials" id="reviews">
+    <div class="testimonials-header">
+      <div class="section-label reveal" style="justify-content:center;">Testimonials</div>
+      <h2 class="testimonials-title reveal reveal-delay-1">Words from our <em>collectors.</em></h2>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">The Onyx Edition is genuinely the finest watch I've owned. The movement is mesmerizing through the caseback and the finishing is flawless.</p>
+        <div class="review-author">
+          <div class="review-avatar">MK</div>
+          <div>
+            <div class="review-name">Marcus Klein</div>
+            <div class="review-handle">Watch Collector · Berlin</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal reveal-delay-1">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">I've worn luxury watches for 20 years. AURA punches well above its category — the dial depth and lume application are extraordinary.</p>
+        <div class="review-author">
+          <div class="review-avatar">SL</div>
+          <div>
+            <div class="review-name">Sylvia Laurent</div>
+            <div class="review-handle">Architect · Paris</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal reveal-delay-2">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Customer service is as exceptional as the product. They walked me through every detail and the packaging experience was unforgettable.</p>
+        <div class="review-author">
+          <div class="review-avatar">RN</div>
+          <div>
+            <div class="review-name">Rayan Nair</div>
+            <div class="review-handle">Entrepreneur · Dubai</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="pricing-header">
+      <div class="section-label reveal" style="justify-content:center;">Choose Your AURA</div>
+      <h2 class="pricing-title reveal reveal-delay-1">One Standard: <em>Exceptional.</em></h2>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-tier">Classic</div>
+        <div class="price-amount">$199</div>
+        <div class="price-period">One-time · Free shipping</div>
+        <ul class="price-features">
+          <li>38mm Stainless Case</li>
+          <li>Mineral Crystal</li>
+          <li>50m Water Resistance</li>
+          <li>2-Year Warranty</li>
+          <li>NATO Strap</li>
+        </ul>
+        <button class="btn-price">Order Classic</button>
+      </div>
+      <div class="price-card featured reveal reveal-delay-1">
+        <div class="price-badge">Most Popular</div>
+        <div class="price-tier">Pro</div>
+        <div class="price-amount">$299</div>
+        <div class="price-period">One-time · Free shipping</div>
+        <ul class="price-features">
+          <li>40mm Titanium Case</li>
+          <li>Sapphire Crystal</li>
+          <li>100m Water Resistance</li>
+          <li>7-Year Warranty</li>
+          <li>Leather + NATO Strap</li>
+        </ul>
+        <button class="btn-price">Order Pro</button>
+      </div>
+      <div class="price-card reveal reveal-delay-2">
+        <div class="price-tier">Limited</div>
+        <div class="price-amount">$499</div>
+        <div class="price-period">One-time · White glove</div>
+        <ul class="price-features">
+          <li>42mm Titanium / PVD</li>
+          <li>Sapphire Front & Back</li>
+          <li>300m Water Resistance</li>
+          <li>Lifetime Warranty</li>
+          <li>Bespoke Box Set</li>
+        </ul>
+        <button class="btn-price">Order Limited</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="contact">
+    <div class="section-label cta-label reveal">Make Your Move</div>
+    <h2 class="cta-title reveal reveal-delay-1">
+      Time is the only<br>luxury that <em>matters.</em>
+    </h2>
+    <p class="cta-subtitle reveal reveal-delay-2">
+      Join 48,000 collectors who chose AURA.
+      Free shipping, 30-day returns, lifetime servicing.
+    </p>
+    <div class="cta-buttons reveal reveal-delay-3">
+      <a href="#pricing" class="btn-primary">Shop the Collection</a>
+      <a href="#" class="btn-ghost">Book a Consultation</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">AURA</a>
+      <p class="footer-tagline">Precision-crafted timepieces for the discerning individual. Made to outlast trends and lifetimes.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Explore</div>
+      <ul class="footer-links">
+        <li><a href="#">Collection</a></li>
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Craftsmanship</a></li>
+        <li><a href="#">Lookbook</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Support</div>
+      <ul class="footer-links">
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Shipping</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Servicing</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Connect</div>
+      <ul class="footer-links">
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">LinkedIn</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Affiliates</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-bottom-text">© 2026 AURA Timepieces. All rights reserved.</span>
+      <span class="footer-bottom-text">Privacy · Terms · Cookies</span>
+    </div>
+  </footer>
+
+  <script>
+    // CURSOR
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function animCursor() {
+      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animCursor);
+    }
+    animCursor();
+    document.querySelectorAll('a, button, .feature-card, .review-card, .price-card').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+
+    // 3D TILT on product card
+    const productCard = document.getElementById('productCard');
+    const productVisual = document.getElementById('productVisual');
+    if (productCard) {
+      document.querySelector('.hero-right').addEventListener('mousemove', e => {
+        const rect = productVisual.getBoundingClientRect();
+        const x = (e.clientX - rect.left - rect.width/2) / rect.width;
+        const y = (e.clientY - rect.top - rect.height/2) / rect.height;
+        productCard.style.transform = `rotateY(${x*18}deg) rotateX(${-y*12}deg)`;
+      });
+      document.querySelector('.hero-right').addEventListener('mouseleave', () => {
+        productCard.style.transform = 'rotateY(0) rotateX(0)';
+      });
+    }
+
+    // SCROLL REVEAL
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(el => observer.observe(el));
+
+    // COUNT-UP STATS
+    function countUp(el, target, suffix = '') {
+      let start = 0;
+      const duration = 1800;
+      const step = timestamp => {
+        if (!start) start = timestamp;
+        const progress = Math.min((timestamp - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const value = Math.floor(eased * target);
+        el.textContent = value.toLocaleString() + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+    const statObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = parseInt(el.dataset.target);
+          const suffix = el.dataset.target === '98' ? '%' : (el.dataset.target === '48000' ? '' : '');
+          if (!isNaN(target)) countUp(el, target, suffix);
+          statObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('[data-target]').forEach(el => statObserver.observe(el));
+
+    // SMOOTH ANCHOR SCROLL
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+      });
+    });
+  </script>
+</body>
+</html>
